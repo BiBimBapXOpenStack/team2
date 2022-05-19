@@ -1,119 +1,103 @@
+require("dotenv").config();
+
 const express = require("express");
 const router = express.Router();
-const template = require("../modules/template.js");
 const mysql = require("mysql");
 const dbconfig = {
     host: "localhost",
     port: "3306",         //db 전용 포트
     user: "root",
     password: "dbswnsvoa353",
-        //todo :: database: "bibimbapstudy"
+    database: "bibimbapstudy"
 
-    // database: "university",
 };
 const connection = mysql.createConnection(dbconfig);
 
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");       //git.ignor 해야함
+const jwt = require("jsonwebtoken"); 
 
 const users = {};
-const jwtSecret = "qwert"; 
+const jwtSecret = process.env.JWT_SECRET;  //ignore
 
-router.use("*",(req,res)=>{
+router.use("*",(req,res,next)=>{
     next();
 })
 
-router.post("/login",(req,res,next)=>{
+//로그인 ok~
+router.post("/login",async(req,res,next)=>{
     let id = req.body.userid;
     let pw = req.body.userpw;
-    let hashed = await bcrpt.hash(pw,10);
+    let hashed = await bcrypt.hash(pw,10);
     let newUserToken = jwt.sign({id},jwtSecret,{
         expiresIn : 15*60
     });
 
 
     let query = `
-    select * from user where id=${id} and pw = '${pw}'
-    ;`;
-    connection.query(query, (err, rows) => {
-        if(rows.length !=0 ) res.status(200).send("1");
-        else res.status(200).send("0");
+    select * from user where user_id='${id}' and user_pw = '${pw}';`;
+    connection.query(query, (err, result) => {
+        if(!result){
+            res.status(400).send("login fail");
+        } 
+        else if(result.length!=0){
+            res.cookie("2team-Token",newUserToken);
+            res.status(200).send("login success");
+        } else {
+            res.status(400).send("login fail");
+        }
 
         if (err) console.log(err);
         else console.log("createComment");
     });
-
-    res.cookie("2team-Token",newUserToken);
-    res.status(200).send();      
 });
 
-router.post("/users/",(req,res,next)=>{
-        
-});
 
-/* const express = require("express");
-const router = express.Router();
-const template = require("../modules/template.js");
-const mysql = require("mysql");
-const dbconfig = {
-    host: "localhost",
-    port: "3306",         //db 전용 포트
-    user: "root",
-    password: "dbswnsvoa353",
-    //todo :: database: "bibimbapstudy"
+//로그아웃
 
-    // database: "university",
-};
-const connection = mysql.createConnection(dbconfig);
 
-router.all("/users",(req,res,next)=>{
 
-    let id = req.body.userid;
-    let pw = req.body.userpw;
-    let name = req.body.username;
-    let query = `
-    insert into user(id,pw) values
-    ('${id}','${pw}','${name})
-    ;`;
-    connection.query(query, (err, rows) => {
+
+//중복체크
+
+//회원가입 ok~
+router.post("/",(req,res,next)=>{
+    // let query = `
+    // create table user(
+    //     id varchar(50) primary key,
+    //     pw varchar(100) not null
+    // );`;
+    // connection.query(query, (err, rows) => {
+    //     if (err) console.log(err);
+    //     else console.log("createTable");
+    // });
+
+    let id = req.body.id;
+    let pw = req.body.pw;
+    let name = req.body.name;
+
+
+    console.log("body = {}",req.body);
+    let insertquery = `
+    insert into user(user_id,user_pw,user_name) values ('${id}','${pw}','${name}');`;
+    connection.query(insertquery, (err, rows) => {
         if (err) console.log(err);
         else console.log("createComment");
     });
-    res.redirect("/");
 
-    res.status(200)
+    res.status(200);
+    res.send();
+
+    //todo:: 실패시
 });
 
+
+/*
 
 module.exports = router;
 
-// router.all("/createTable", (req, res, next) => {
-//     let query = `
-//     create table user(
-//         id varchar(50) primary key,
-//         pw varchar(100) not null
-//     );`;
-//     connection.query(query, (err, rows) => {
-//         if (err) console.log(err);
-//         else console.log("createTable");
-//     });
 
-//     res.send("bravo");
-// });
 
-// router.all("/adduser", (req, res, next) => {
-//     let id = req.body.userid;
-//     let pw = req.body.userpw;
-//     let query = `
-//     insert into user(id,pw) values
-//     ('${id}','${pw}')
-//     ;`;
-//     connection.query(query, (err, rows) => {
-//         if (err) console.log(err);
-//         else console.log("createComment");
-//     });
-//     res.redirect("/");
-// });
+
 
 //todo :: 중복 체크
 
