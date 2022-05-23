@@ -3,11 +3,12 @@ var bodyParser=require('body-parser');
 var router = express.Router();
 const mysql = require("mysql");
 const dbconfig = {
-    host: "localhost",
-    port: "3306",         
-    user: "root",
-    password: "dbswnsvoa353",
+    host: "61efabca-bbc3-4c4a-94a3-05414ca1adc6.public.rds.cloud.toast.com",
+    port: "11111",         //db 전용 포트
+    user: "team2",
+    password: "team2!",
     database: "bibimbapstudy"
+
 };
 const connection = mysql.createConnection(dbconfig);
 

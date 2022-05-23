@@ -8,11 +8,12 @@ const path=require("path");
 const multer = require('multer');
 
 const dbconfig = {
-    host: "localhost",
-    port: "3306",         //db 전용 포트
-    user: "root",
-    password: "dbswnsvoa353",
-    database: "bibimbapstudy"
+  host: "61efabca-bbc3-4c4a-94a3-05414ca1adc6.public.rds.cloud.toast.com",
+  port: "11111",         //db 전용 포트
+  user: "team2",
+  password: "team2!",
+  database: "bibimbapstudy"
+
 };
 const connection = mysql.createConnection(dbconfig);
 
