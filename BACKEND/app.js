@@ -12,14 +12,11 @@ app.use(cookieParser());
 
 const users = require("./routes/user/user.js");
 const board = require("./routes/board/board.js");
+const images = require("./routes/images/images.js");
 
 app.use("/users",users);
 app.use("/board",board);
-// app.use("/images",images);
-
-// app.get("/",(req,res,next) =>{
-//     res.status(200).send(template.HTML(data));
-// });
+app.use("/images",images);
 
 app.all("*", (req, res, next) => {
     res.status(404).send();
