@@ -4,11 +4,10 @@ var router = express.Router();
 const mysql = require("mysql");
 const dbconfig = {
     host: "61efabca-bbc3-4c4a-94a3-05414ca1adc6.public.rds.cloud.toast.com",
-    port: "11111",         //db 전용 포트
+    port: "11111",         
     user: "team2",
     password: "team2!",
     database: "bibimbapstudy"
-
 };
 const connection = mysql.createConnection(dbconfig);
 
@@ -38,20 +37,40 @@ router.get('/list',function(req,res,next){
 });
 
 
-// 게시글 리스트
-router.get('/list/:page',function(req,res,next){
-    var page=req.params.page; // :page 로 매핑할 req 값 가져오기
-    var sql=`SELECT user_id,_id,board_title,board_content,image_Src from board`
+// // 게시글 리스트
+// router.get('/list/:page',function(req,res,next){
+//     var page=req.params.page; // :page 로 매핑할 req 값 가져오기
+//     var sql=`SELECT * from board`
+//     connection.query(sql,function(err,rows){
+//         if(err) {console.error("err: " +err);
+//     }
+//     console.log(rows);
+//        // res.render('',{boardlist:result}); // '' 에 html ? 앱이면 ?
+//     });
+//     res.status(200).send(); //성공시 ,다른조건 반환 ?
+// });
+
+
+// 게시글 리스트(페이징 기능 제외하고 일단)
+router.get('/list',function(req,res,next){
+    var sql=`SELECT * from board`
     connection.query(sql,function(err,rows){
-        if(err) {console.error("err: " +err);
-    }
-    console.log(rows);
-    rows = [('아메리카노')];
+        if(!err) {
+            res.send(rows);
+        }
+        else{
+            console.error("err: " +err);
+        }
        // res.render('',{boardlist:result}); // '' 에 html ? 앱이면 ?
-       
-    res.status(200).send(`${rows}`);
-    }); // 성공시 , 다른조건 반환 ?
+    });
+    
+    //성공시 ,다른조건 반환 ?
+    res.status(200)
+    console.log(res.body)
+    
 });
+
+
 
 
 // 게시글 조회 ok
@@ -74,8 +93,14 @@ router.post('/',function(req,res,next){
     var title=req.body.title;
     var content=req.body.content;
     var imageSrc=req.body.imageSrc;
+    console.log("나 여기 들어와따~")
 
-    var sql=`insert into board(board_title,board_content, image_src, user_id) values('${title}','${content}','${imageSrc}','${userid}')`;
+
+    console.log(title, content)
+    // var sql=`insert into board(board_title,board_content, image_src, user_id) values('${title}','${content}','ffffff','${userid}')`;
+
+    var sql=`insert into board(title, content, userid) values('${title}','${content}','${userid}')`;
+
 
     connection.query(sql,function(err,rows){
         if(err) console.error("err: "+err);
@@ -83,8 +108,7 @@ router.post('/',function(req,res,next){
     });
     
     console.log("리스트 잘 됨");
-    res.status(200).send(); 
-
+    res.status(200).send({message : "Making post success"}); 
     //todo:: 실패시
 });
 
@@ -105,26 +129,24 @@ router.put('/:board_id',function(req,res,next){
             res.status(400).send("invalid boardid"); // boardid 잘못된 경우
         }
     });
-    res.status(200).send("ㅇㅋ"); 
+    res.status(200).send(); 
 
 });
 
 // 게시글 삭제
-router.delete('/:board_id',function(req,res,next){
-    var board_id=req.params.board_id;
-    var sql=`delete from board where _id='${board_id}'`;
+router.delete('/:postid',function(req,res,next){
+    var postid=req.params.postid;
+    var sql=`delete from board where postid='${postid}'`;
     
     connection.query(sql, function(err, rows){
         if(err) console.error("err: "+err);
         if (rows.affectedRows == 0) {
-            res.status(400).send("invalid boardid"); // boardid 잘못된 경우
-
+            res.status(400).send({message : "Delete failed"}); // boardid 잘못된 경우
         } 
-    });
-    
-    res.status(200).send("옼케이 ~"); // 성공시 , 다른조건 반환 ?
-
+    }); 
+    res.status(200).send({message : "Delete success"}); // 성공시 , 다른조건 반환 ?
 });
+console.log("temp")
 // 페이징 기능
 router.get('/page/:page',function(req,res,next)
 {
