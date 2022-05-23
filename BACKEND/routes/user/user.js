@@ -53,23 +53,12 @@ router.post("/login",async(req,res,next)=>{
 
 
 //로그아웃
+router.get("/logout"(req,res,next){
+
+});
 
 
-
-
-//중복체크
-
-//회원가입 ok~
 router.post("/",(req,res,next)=>{
-    // let query = `
-    // create table user(
-    //     id varchar(50) primary key,
-    //     pw varchar(100) not null
-    // );`;
-    // connection.query(query, (err, rows) => {
-    //     if (err) console.log(err);
-    //     else console.log("createTable");
-    // });
 
     let id = req.body.id;
     let pw = req.body.pw;
@@ -91,12 +80,6 @@ router.post("/",(req,res,next)=>{
 });
 
 
-/*
-
-module.exports = router;
-
-
-
 
 
 //todo :: 중복 체크
@@ -116,6 +99,5 @@ module.exports = router;
 //     });
 //     res.redirect("/");
 // });
-*/
 
 module.exports = router;

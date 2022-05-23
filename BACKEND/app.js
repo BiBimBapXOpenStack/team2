@@ -17,6 +17,10 @@ const images = require("./routes/images/images.js");
 app.use("/users",users);
 app.use("/board",board);
 app.use("/images",images);
+app.get("/",(req,res,next)=>{
+    res.send("hi");
+}
+)
 
 app.all("*", (req, res, next) => {
     res.status(404).send();
