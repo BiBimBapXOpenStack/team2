@@ -1,6 +1,6 @@
 var express=require('express');
 var router = express.Router();
-
+var mime =require('mime');
 
 const mysql = require("mysql");
 var fs=require('fs');
@@ -13,31 +13,49 @@ const dbconfig = {
     user: "root",
     password: "dbswnsvoa353",
     database: "bibimbapstudy"
-
 };
 const connection = mysql.createConnection(dbconfig);
 
-// 이미지 업로드
-router.post('/',(req,res) => {
-  var img=req.body.img_src;
-    multer({
-      storage: multer.diskStorage({
-        destination: function (req, file, cb) {
-          cb(null, 'uploads/'); // 경로 routes/uploads/ 로 통일
-        },
-        filename: function (req, file, cb) {
-          cb(null, img);
-        }
-      }),
-    }).single('img');
-    //req.file - > 이미지 파일 정보 
-    console.log(req.file)
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, __dirname+'/uploads/');
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname);
+    }
+  }),
+});
+// // 이미지 업로드
+// router.post('/',upload.single('userfile'),(req,res) => {
+//    console.log(req.file);
+    
+//     res.status(200).send("what")
+// })
+// const upload = multer({ 
+//   dest: __dirname+'/uploads/', // 이미지 업로드 경로
+// }) 
+router.post('/', upload.single('file'),(req,res,next) => {
+  const { fieldname, originalname, encoding, mimetype, destination, filename, path, size } = req.file
+  const { name } = req.body;
+
+  console.log("body 데이터 : ", name);
+  console.log("폼에 정의된 필드명 : ", fieldname);
+  console.log("사용자가 업로드한 파일 명 : ", originalname);
+  console.log("파일의 엔코딩 타입 : ", encoding);
+  console.log("파일의 Mime 타입 : ", mimetype);
+  console.log("파일이 저장된 폴더 : ", destination);
+  console.log("destinatin에 저장된 파일 명 : ", filename);
+  console.log("업로드된 파일의 전체 경로 ", path);
+  console.log("파일의 바이트(byte 사이즈)", size);
+  res.status(200).json({success: "true"});
+  
 })
 
 
 //이미지 다운로드
 router.get('/download/:file_name', function(req, res, next) {
-    var upload_folder = 'uploads/';
+    var upload_folder =  __dirname+'/uploads/';
     var file = upload_folder + req.params.file_name; // ex) /upload/files/sample.txt
     
     try {

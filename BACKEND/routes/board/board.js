@@ -45,9 +45,11 @@ router.get('/list/:page',function(req,res,next){
         if(err) {console.error("err: " +err);
     }
     console.log(rows);
+    rows = [('아메리카노')];
        // res.render('',{boardlist:result}); // '' 에 html ? 앱이면 ?
-    });
-    res.status(200).send(); // 성공시 , 다른조건 반환 ?
+       
+    res.status(200).send(`${rows}`);
+    }); // 성공시 , 다른조건 반환 ?
 });
 
 
@@ -102,7 +104,7 @@ router.put('/:board_id',function(req,res,next){
             res.status(400).send("invalid boardid"); // boardid 잘못된 경우
         }
     });
-    res.status(200).send(); 
+    res.status(200).send("ㅇㅋ"); 
 
 });
 
