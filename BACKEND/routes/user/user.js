@@ -4,10 +4,10 @@ const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
 const dbconfig = {
-    host: "61efabca-bbc3-4c4a-94a3-05414ca1adc6.public.rds.cloud.toast.com",
-    port: "11111",         //db 전용 포트
-    user: "team2",
-    password: "team2!",
+    host: "127.0.0.1",
+    port: "3306",         //db 전용 포트
+    user: "root",
+    password: "dbswnsvoa353",
     database: "bibimbapstudy"
 
 };
@@ -52,10 +52,10 @@ router.post("/login",async(req,res,next)=>{
 });
 
 
-//로그아웃
-router.get("/logout"(req,res,next){
+// 로그아웃
+// router.get("/logout"(req,res,next){
 
-});
+// });
 
 
 router.post("/",(req,res,next)=>{
