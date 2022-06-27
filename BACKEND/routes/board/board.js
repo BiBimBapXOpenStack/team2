@@ -3,10 +3,10 @@ var bodyParser=require('body-parser');
 var router = express.Router();
 const mysql = require("mysql");
 const dbconfig = {
-    host: "61efabca-bbc3-4c4a-94a3-05414ca1adc6.public.rds.cloud.toast.com",
-    port: "11111",         
-    user: "team2",
-    password: "team2!",
+    host: "127.0.0.1",
+    port: "3306",         //db 전용 포트
+    user: "root",
+    password: "dbswnsvoa353",
     database: "bibimbapstudy"
 };
 const connection = mysql.createConnection(dbconfig);
@@ -151,7 +151,7 @@ console.log("temp")
 router.get('/page/:page',function(req,res,next)
 {
     var page = req.params.page;
-    var sql = "SELECT userid,postid,title,content,imageFile from board";
+    var sql = `SELECT userid,postid,title,content,imageFile from board`;
     conn.query(sql, function (err, rows) {
         if (err) console.error("err : " + err);
         res.render('~~.ejs', {title: ' 게시판 리스트', rows: rows, page:page, length:rows.length-1, page_num:10, pass:true});
