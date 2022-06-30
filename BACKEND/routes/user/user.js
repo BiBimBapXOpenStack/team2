@@ -4,13 +4,13 @@ const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
 const dbconfig = {
-    host: "127.0.0.1",
-    port: "3306",         //db 전용 포트
-    user: "root",
-    password: "dbswnsvoa353",
-    database: "bibimbapstudy"
-
-};
+    host: "28f12961-41cb-4559-bff9-eafede92aea7.external.kr1.mysql.rds.nhncloudservice.com",
+    port: "10000",         //db 전용 포트
+    user: "team2",
+    password: "gkkoxojy$$",
+    database: "team2db"
+    
+  };
 const connection = mysql.createConnection(dbconfig);
 
 const bcrypt = require("bcrypt");
@@ -53,10 +53,13 @@ router.post("/login",async(req,res,next)=>{
 });
 
 
-// 로그아웃
-// router.get("/logout"(req,res,next){
-
-// });
+//로그아웃
+router.get("/logout",(req,res,next)=>{
+    res.cookie("2team-Token",'login=true; Max-age=0');
+    console.log("토큰 삭제");
+    res.redirect('/login');
+    console.log("로그 아웃"); 
+});
 
 
 router.post("/",(req,res,next)=>{

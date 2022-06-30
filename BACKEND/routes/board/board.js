@@ -3,12 +3,13 @@ var bodyParser=require('body-parser');
 var router = express.Router();
 const mysql = require("mysql");
 const dbconfig = {
-    host: "127.0.0.1",
-    port: "3306",         //db 전용 포트
-    user: "root",
-    password: "dbswnsvoa353",
-    database: "bibimbapstudy"
-};
+    host: "28f12961-41cb-4559-bff9-eafede92aea7.external.kr1.mysql.rds.nhncloudservice.com",
+    port: "10000",         //db 전용 포트
+    user: "team2",
+    password: "gkkoxojy$$",
+    database: "team2db"
+    
+  };
 const connection = mysql.createConnection(dbconfig);
 
 const jwt = require("jsonwebtoken");       
