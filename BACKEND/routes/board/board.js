@@ -75,8 +75,8 @@ router.get('/list',function(req,res,next){
 
 // 게시글 조회 ok
 router.get('/:board_id',function(req,res,next){
-    console.log(req);
     var boardid=req.params.board_id;
+    console.log("boardid ====" + boardid)
     var sql=`SELECT user_id,_id,board_title,board_content,image_Src from board where _id ='${boardid}'`;
     connection.query(sql,function(err,rows){
         if(err) console.error("err :"+err);
@@ -93,13 +93,12 @@ router.post('/',function(req,res,next){
     var title=req.body.title;
     var content=req.body.content;
     var imageSrc=req.body.imageSrc;
-    console.log("나 여기 들어와따~")
 
 
     console.log(title, content)
     // var sql=`insert into board(board_title,board_content, image_src, user_id) values('${title}','${content}','ffffff','${userid}')`;
 
-    var sql=`insert into board(title, content, userid) values('${title}','${content}','${userid}')`;
+    var sql=`insert into board(board_title, board_content,image_src, user_id) values('${title}','${content}','${imageSrc}','${userid}')`;
 
 
     connection.query(sql,function(err,rows){
@@ -146,7 +145,6 @@ router.delete('/:postid',function(req,res,next){
     }); 
     res.status(200).send({message : "Delete success"}); // 성공시 , 다른조건 반환 ?
 });
-console.log("temp")
 // 페이징 기능
 router.get('/page/:page',function(req,res,next)
 {
