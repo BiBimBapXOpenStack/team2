@@ -8,13 +8,14 @@ const path=require("path");
 const multer = require('multer');
 
 const dbconfig = {
-  host: "61efabca-bbc3-4c4a-94a3-05414ca1adc6.public.rds.cloud.toast.com",
-  port: "11111",         //db 전용 포트
+  host: "28f12961-41cb-4559-bff9-eafede92aea7.external.kr1.mysql.rds.nhncloudservice.com",
+  port: "10000",         //db 전용 포트
   user: "team2",
-  password: "team2!",
-  database: "bibimbapstudy"
-
+  password: "gkkoxojy$$",
+  database: "team2db"
+  
 };
+
 const connection = mysql.createConnection(dbconfig);
 
 const upload = multer({
