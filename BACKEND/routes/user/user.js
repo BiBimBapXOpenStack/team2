@@ -25,6 +25,7 @@ router.use("*",(req,res,next)=>{
 
 //로그인 ok~
 router.post("/login",async(req,res,next)=>{
+    console.log("why");
     let id = req.body.userid;
     let pw = req.body.userpw;
     let hashed = await bcrypt.hash(pw,10);
