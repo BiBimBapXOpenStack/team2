@@ -17,7 +17,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken"); 
 
 const users = {};
-const jwtSecret = process.env.JWT_SECRET;  //ignore
+const jwtSecret = process.env.JWT_SECRET;  
 
 router.use("*",(req,res,next)=>{
     next();
@@ -42,7 +42,7 @@ router.post("/login",async(req,res,next)=>{
         } 
         else if(result.length!=0){
             res.cookie("2team-Token",newUserToken);
-            res.status(200).send("login success");
+            res.status(200).send({message:"success"});
         } else {
             res.status(400).send("login fail");
         }
@@ -64,9 +64,9 @@ router.get("/logout",(req,res,next)=>{
 
 router.post("/",(req,res,next)=>{
 
-    let id = req.body.id;
-    let pw = req.body.pw;
-    let name = req.body.name;
+    let id = req.body.userid;
+    let pw = req.body.password;
+    let name = req.body.username;
 
 
     console.log("body = {}",req.body);
@@ -77,7 +77,7 @@ router.post("/",(req,res,next)=>{
         else console.log("createComment");
     });
 
-    res.status(200);
+    res.status(200).send({message:"join success"});
     res.send();
 
     //todo:: 실패시

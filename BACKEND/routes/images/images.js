@@ -28,15 +28,7 @@ const upload = multer({
     }
   }),
 });
-// // 이미지 업로드
-// router.post('/',upload.single('userfile'),(req,res) => {
-//    console.log(req.file);
-    
-//     res.status(200).send("what")
-// })
-// const upload = multer({ 
-//   dest: __dirname+'/uploads/', // 이미지 업로드 경로
-// }) 
+
 router.post('/', upload.single('file'),(req,res,next) => {
   const { fieldname, originalname, encoding, mimetype, destination, filename, path, size } = req.file
   const { name } = req.body;
@@ -50,7 +42,15 @@ router.post('/', upload.single('file'),(req,res,next) => {
   console.log("destinatin에 저장된 파일 명 : ", filename);
   console.log("업로드된 파일의 전체 경로 ", path);
   console.log("파일의 바이트(byte 사이즈)", size);
-  res.status(200).json({success: "true"});
+
+  let insertquery = `
+  insert into image(image_src) values ('${originalname}');`;
+  connection.query(insertquery, (err, rows) => {
+      if (err) console.log(err);
+      else console.log("good");
+  });
+
+  res.status(200).json({message:"success"});
   
 })
 
@@ -59,6 +59,7 @@ router.post('/', upload.single('file'),(req,res,next) => {
 router.get('/download/:file_name', function(req, res, next) {
     var upload_folder =  __dirname+'/uploads/';
     var file = upload_folder + req.params.file_name; // ex) /upload/files/sample.txt
+    console.log(req.params.file_name);
     
     try {
       if (fs.existsSync(file)) { // 파일이 존재하는지 체크
