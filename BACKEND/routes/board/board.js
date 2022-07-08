@@ -16,26 +16,20 @@ const jwt = require("jsonwebtoken");
 const { post } = require('../user/user');
 
 
-//토큰 인증
-router.use("*",(req,res,next)=>{
-    console.log(req.cookies);
-    let clientCookie = req.cookies["2team-Token"];
-    console.log(clientCookie);
-    if(!clientCookie) res.status(401).send("인증되지 않은 사용자입니다.");
-    else if(jwt.verify(clientCookie,process.env.JWT_SECRET)){
-        console.log("good~~~!!!");
-        next();
-    }
-    else{
-        res.status(401).send("인증되지 않은 사용자입니다.");
-    }
-});
-
-
-
-router.get('/list',function(req,res,next){
-    res.redirect('/board/list/1');
-});
+// //토큰 인증
+// router.use("*",(req,res,next)=>{
+//     console.log(req.cookies);
+//     let clientCookie = req.cookies["2team-Token"];
+//     console.log(clientCookie);
+//     if(!clientCookie) res.status(401).send("인증되지 않은 사용자입니다.");
+//     else if(jwt.verify(clientCookie,process.env.JWT_SECRET)){
+//         console.log("good~~~!!!");
+//         next();
+//     }
+//     else{
+//         res.status(401).send("인증되지 않은 사용자입니다.");
+//     }
+// });
 
 
 // // 게시글 리스트
@@ -66,7 +60,7 @@ router.get('/list',function(req,res,next){
     });
     
     //성공시 ,다른조건 반환 ?
-    res.status(200)
+    res.status(200).send({message:"success"});
     console.log(res.body)
     
 });
@@ -85,7 +79,7 @@ router.get('/:board_id',function(req,res,next){
         console.log({title : '글 상세보기',rows:rows[0]});          
 
     });
-    res.status(200).send();
+    res.status(200).send({message:"success"});
 });
 
 // 게시글 작성 ok~
@@ -108,7 +102,7 @@ router.post('/',function(req,res,next){
     });
     
     console.log("리스트 잘 됨");
-    res.status(200).send({message : "Making post success"}); 
+    res.status(200).send({message:"success"}); 
     //todo:: 실패시
 });
 
@@ -117,7 +111,7 @@ router.put('/:board_id',function(req,res,next){
     var userid=req.body.user_id;
     var boardid=req.params.board_id;
     var title=req.body.board_title;
-    var content=req.body.board_content;
+    var content=req.body.content;
     var imageSrc=req.body.image_Src;
 
     console.log("body = {}",req.body);
@@ -129,14 +123,14 @@ router.put('/:board_id',function(req,res,next){
             res.status(400).send("invalid boardid"); // boardid 잘못된 경우
         }
     });
-    res.status(200).send(); 
+    res.status(200).send({message:"success"}); 
 
 });
 
 // 게시글 삭제
 router.delete('/:postid',function(req,res,next){
     var postid=req.params.postid;
-    var sql=`delete from board where postid='${postid}'`;
+    var sql=`delete from board where _id='${postid}'`;
     
     connection.query(sql, function(err, rows){
         if(err) console.error("err: "+err);
@@ -144,7 +138,7 @@ router.delete('/:postid',function(req,res,next){
             res.status(400).send({message : "Delete failed"}); // boardid 잘못된 경우
         } 
     }); 
-    res.status(200).send({message : "Delete success"}); // 성공시 , 다른조건 반환 ?
+    res.status(200).send({message:"success"}); // 성공시 , 다른조건 반환 ?
 });
 // 페이징 기능
 router.get('/page/:page',function(req,res,next)
@@ -157,7 +151,5 @@ router.get('/page/:page',function(req,res,next)
         console.log(rows.length-1);
     });
 });
-
-
 
 module.exports=router;
