@@ -2,7 +2,7 @@ name: slack_start
 
 on:
   workflow_run:
-    workflows: [deploy]
+    workflows: [deployTest]
     types:
      - requested
 
