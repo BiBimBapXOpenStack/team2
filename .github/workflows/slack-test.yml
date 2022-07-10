@@ -1,5 +1,5 @@
 name: deployTest
-	
+
 on:
   push:
     branches: [ test/alarm ]
