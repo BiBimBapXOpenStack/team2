@@ -2,7 +2,7 @@ name: slack_start
 
 on:
   workflow_run:
-    workflows: [deployTest]
+    workflows: [https://github.com/BiBimBapXOpenStack/team2-BACKEND/actions/workflows/slack-test.yml]
     types:
      - requested
 
