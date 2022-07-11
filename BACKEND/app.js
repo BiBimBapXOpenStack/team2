@@ -10,15 +10,20 @@ app.use(bodyParser.json());
 
 app.use(cookieParser());
 
+const jwt = require("jsonwebtoken"); 
 const users = require("./routes/user/user.js");
 const board = require("./routes/board/board.js");
 const images = require("./routes/images/images.js");
+const jwtSecret = process.env.JWT_SECRET;  
 
 app.use("/users",users);
 app.use("/board",board);
 app.use("/images",images);
 app.get("/",(req,res,next)=>{
     res.send("hi");
+    let newServerToken = jwt.sign({data:"server token"},jwtSecret,{
+        expiresIn : '99999d'
+    });
 }
 )
 
