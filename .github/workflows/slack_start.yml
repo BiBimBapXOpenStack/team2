@@ -4,7 +4,8 @@ on:
   workflow_run:
     workflows: [deployTest]
     types:
-     - requested
+      - requested
+
 
 jobs:
   build:
@@ -20,7 +21,7 @@ jobs:
           distribution: 'adopt'
 
       - name: action-slack
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v2
         with:
           status: custom
           payload: |
@@ -43,4 +44,4 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-        if: always() # Pick up events even if the job fails or is canceled.
+        if: always()
