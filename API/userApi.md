@@ -19,7 +19,7 @@ Request Body
 
 “userid” : “id”
 
-“userpw” : “pw”
+“password” : “pw”
 
 “username” : “고길동”
 
