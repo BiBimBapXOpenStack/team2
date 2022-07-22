@@ -17,7 +17,7 @@ Request Body
 ```json
 {
 
-“userid” : “abc”
+“userid” : “id”
 
 “password” : “pw”
 
@@ -37,7 +37,7 @@ Code : 200 OK
 
 Content
 {
-
+  message : "success"
 }
 ```
 
@@ -81,7 +81,7 @@ Request Body
 ```json
 {
 
-“userid” : “abc”
+“userid” : “id”
 
 “password” : “pw”
 
@@ -99,7 +99,7 @@ Code : 200 OK
 
 Content
 {
-
+  message : "join success"
 }
 ```
 

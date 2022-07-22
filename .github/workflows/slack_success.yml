@@ -2,7 +2,7 @@ name: slack_success
 
 on:
   workflow_run:
-    workflows: [deploy]
+    workflows: [deployTest]
     types: [completed]
 
 jobs:
