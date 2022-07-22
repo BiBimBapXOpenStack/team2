@@ -4,12 +4,11 @@ const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
 const dbconfig = {
-    host: "28f12961-41cb-4559-bff9-eafede92aea7.external.kr1.mysql.rds.nhncloudservice.com",
-    port: "10000",         //db 전용 포트
-    user: "team2",
-    password: "gkkoxojy$$",
-    database: "team2db"
-    
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,        
+    user: process.env.DB_USER,
+    password: process.env.DB_PW,
+    database: process.env.DB_DATABASE
   };
 const connection = mysql.createConnection(dbconfig);
 
@@ -62,14 +61,15 @@ router.get("/logout",(req,res,next)=>{
 });
 
 
+//회원가입
 router.post("/",(req,res,next)=>{
 
     let id = req.body.userid;
-    let pw = req.body.password;
+    let pw = req.body.userpw;
     let name = req.body.username;
 
 
-    console.log("body = {}",req.body);
+    console.log("body = {}",id,pw,name);
     let insertquery = `
     insert into user(user_id,user_pw,user_name) values ('${id}','${pw}','${name}');`;
     connection.query(insertquery, (err, rows) => {
@@ -83,25 +83,7 @@ router.post("/",(req,res,next)=>{
     //todo:: 실패시
 });
 
+//중복 체크 > 프론트에서
 
-
-
-//todo :: 중복 체크
-
-// router.all("/validate/:id", (req, res, next) => {
-//     let id = req.params.userid;
-
-//     let query = `
-//     select id from user where id=${id}
-//     ;`;
-//     connection.query(query, (err, rows) => {
-//         if(rows==null)res.status(200).send("1");
-//         else res.status(200).send("0");
-
-//         if (err) console.log(err);
-//         else console.log("createComment");
-//     });
-//     res.redirect("/");
-// });
 
 module.exports = router;
