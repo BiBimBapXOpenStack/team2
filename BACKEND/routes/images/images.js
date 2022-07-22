@@ -6,22 +6,25 @@ const mysql = require("mysql");
 var fs=require('fs');
 const path=require("path");
 const multer = require('multer');
+const ObjectStorage = require('../../module/ObjectStorage');
+
+const OS_ENDPOINT = process.env.OS_ENDPOINT;
+
 
 const dbconfig = {
-  host: "28f12961-41cb-4559-bff9-eafede92aea7.external.kr1.mysql.rds.nhncloudservice.com",
-  port: "10000",         //db 전용 포트
-  user: "team2",
-  password: "gkkoxojy$$",
-  database: "team2db"
-  
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,         
+  user: process.env.DB_USER,
+  password: process.env.DB_PW,
+  database: process.env.DB_DATABASE
 };
 
 const connection = mysql.createConnection(dbconfig);
 
 const upload = multer({
-  storage: multer.diskStorage({
+  storage: ObjectStorage({
     destination: function (req, file, cb) {
-      cb(null, __dirname+'/uploads/');
+      cb(null, '/uploads/');
     },
     filename: function (req, file, cb) {
       cb(null, file.originalname);
@@ -30,29 +33,24 @@ const upload = multer({
 });
 
 router.post('/', upload.single('file'),(req,res,next) => {
-  const { fieldname, originalname, encoding, mimetype, destination, filename, path, size } = req.file
-  const { name } = req.body;
-
-  console.log("body 데이터 : ", name);
-  console.log("폼에 정의된 필드명 : ", fieldname);
-  console.log("사용자가 업로드한 파일 명 : ", originalname);
-  console.log("파일의 엔코딩 타입 : ", encoding);
-  console.log("파일의 Mime 타입 : ", mimetype);
-  console.log("파일이 저장된 폴더 : ", destination);
-  console.log("destinatin에 저장된 파일 명 : ", filename);
-  console.log("업로드된 파일의 전체 경로 ", path);
-  console.log("파일의 바이트(byte 사이즈)", size);
+  const {filename} = req.file;
+  const imagesrc = OS_ENDPOINT + "/team2/uploads/"+filename
+  console.log("imgsrc: " + OS_ENDPOINT + "/team2/uploads/"+filename);
 
   let insertquery = `
-  insert into image(image_src) values ('${originalname}');`;
+  insert into image(image_src) values ('${imagesrc}');`;
   connection.query(insertquery, (err, rows) => {
-      if (err) console.log(err);
-      else console.log("good");
+      if (err) {
+        res.status(400).send({message:"fail"});
+        console.log("err: " +err);
+      }
+      else {
+        res.status(200).send({message:"success", 
+                              image_src: OS_ENDPOINT + "/team2/uploads/"+ filename});
+      }
   });
-
-  res.status(200).json({message:"success"});
   
-})
+});
 
 
 //이미지 다운로드

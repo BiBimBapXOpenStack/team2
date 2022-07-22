@@ -3,12 +3,12 @@ var bodyParser=require('body-parser');
 var router = express.Router();
 const mysql = require("mysql");
 const dbconfig = {
-    host: "28f12961-41cb-4559-bff9-eafede92aea7.external.kr1.mysql.rds.nhncloudservice.com",
-    port: "10000",         //db 전용 포트
-    user: "team2",
-    password: "gkkoxojy$$",
-    database: "team2db"
-    
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,         
+    user: process.env.DB_USER,
+    password: process.env.DB_PW,
+    database: process.env.DB_DATABASE,
+    multipleStatements: true
   };
 const connection = mysql.createConnection(dbconfig);
 
@@ -16,97 +16,78 @@ const jwt = require("jsonwebtoken");
 const { post } = require('../user/user');
 
 
-// //토큰 인증
-// router.use("*",(req,res,next)=>{
-//     console.log(req.cookies);
-//     let clientCookie = req.cookies["2team-Token"];
-//     console.log(clientCookie);
-//     if(!clientCookie) res.status(401).send("인증되지 않은 사용자입니다.");
-//     else if(jwt.verify(clientCookie,process.env.JWT_SECRET)){
-//         console.log("good~~~!!!");
-//         next();
-//     }
-//     else{
-//         res.status(401).send("인증되지 않은 사용자입니다.");
-//     }
-// });
+//토큰 인증
+router.use("*",(req,res,next)=>{
+    console.log(req.cookies);
+    let clientCookie = req.cookies["2team-Token"];
+    console.log(clientCookie);
+    if(!clientCookie) res.status(401).send("인증되지 않은 사용자입니다.");
+    else if(jwt.verify(clientCookie,process.env.JWT_SECRET)){
+        next();
+    }
+    else{
+        res.status(401).send("인증되지 않은 사용자입니다.");
+    }
+});
 
 
-// // 게시글 리스트
-// router.get('/list/:page',function(req,res,next){
-//     var page=req.params.page; // :page 로 매핑할 req 값 가져오기
-//     var sql=`SELECT * from board`
-//     connection.query(sql,function(err,rows){
-//         if(err) {console.error("err: " +err);
-//     }
-//     console.log(rows);
-//        // res.render('',{boardlist:result}); // '' 에 html ? 앱이면 ?
-//     });
-//     res.status(200).send(); //성공시 ,다른조건 반환 ?
-// });
-
-
-// 게시글 리스트(페이징 기능 제외하고 일단)
+// 게시글 리스트
 router.get('/list',function(req,res,next){
     var sql=`SELECT * from board`
     connection.query(sql,function(err,rows){
         if(!err) {
-            res.send(rows);
+            res.status(200).send(rows);
         }
         else{
             console.error("err: " +err);
         }
-       // res.render('',{boardlist:result}); // '' 에 html ? 앱이면 ?
     });
-    
-    //성공시 ,다른조건 반환 ?
-    res.status(200).send({message:"success"});
-    console.log(res.body)
-    
 });
 
 
-
-
-// 게시글 조회 ok
+// 게시글 조회 
 router.get('/:board_id',function(req,res,next){
-    var boardid=req.params.board_id;
-    console.log("boardid ====" + boardid)
-    var sql=`SELECT user_id,_id,board_title,board_content,image_Src from board where _id ='${boardid}'`;
+    var board_id=req.params.board_id;
+    console.log("boardid ====" + board_id)
+    var sql=`SELECT user_id,_id,board_title,board_content,image_Src from board where _id ='${board_id}'`;
     connection.query(sql,function(err,rows){
-        if(err) console.error("err :"+err);
+        if(err) {
+            console.error("err :"+err);
+        }
         // res.render('',{title : '글 상세보기',rows:rows[0]});
-        console.log({title : '글 상세보기',rows:rows[0]});          
-
+        res.status(200).send(rows);         
     });
-    res.status(200).send({message:"success"});
+    
 });
 
-// 게시글 작성 ok~
+
+// 게시글 작성 
 router.post('/',function(req,res,next){
     var userid=req.body.userid;
     var title=req.body.title;
     var content=req.body.content;
     var imageSrc=req.body.imageSrc;
 
+    var sql=`insert into board(board_title, board_content,image_src, user_id) values('${title}','${content}','${imageSrc}','${userid}');`+
+     `ALTER TABLE board AUTO_INCREMENT=1;`+
+     `SET @COUNT = 0;`+
+     `UPDATE board SET _id = @COUNT:=@COUNT+1;`;
 
-    console.log(title, content)
-    // var sql=`insert into board(board_title,board_content, image_src, user_id) values('${title}','${content}','ffffff','${userid}')`;
-
-    var sql=`insert into board(board_title, board_content,image_src, user_id) values('${title}','${content}','${imageSrc}','${userid}')`;
 
 
     connection.query(sql,function(err,rows){
-        if(err) console.error("err: "+err);
-        else console.log("ok~");
-    });
-    
-    console.log("리스트 잘 됨");
-    res.status(200).send({message:"success"}); 
+        if(err) {
+            res.status(400).send({message:"fail"})
+            console.error("err: "+err);
+        }
+        else{
+            res.status(200).send({message:"success"});
+        }
+    }); 
     //todo:: 실패시
 });
 
-//게시글 수정 ok
+//게시글 수정 
 router.put('/:board_id',function(req,res,next){
     var userid=req.body.user_id;
     var boardid=req.params.board_id;
@@ -128,28 +109,21 @@ router.put('/:board_id',function(req,res,next){
 });
 
 // 게시글 삭제
-router.delete('/:postid',function(req,res,next){
-    var postid=req.params.postid;
-    var sql=`delete from board where _id='${postid}'`;
+router.delete('/:board_id',function(req,res,next){
+    var board_id=req.params.board_id;
+    var sql=`delete from board where _id='${board_id}';`+
+    `ALTER TABLE board AUTO_INCREMENT=1;`+
+    `SET @COUNT = 0;`+
+    `UPDATE board SET _id = @COUNT:=@COUNT+1;`;
     
     connection.query(sql, function(err, rows){
         if(err) console.error("err: "+err);
+
         if (rows.affectedRows == 0) {
             res.status(400).send({message : "Delete failed"}); // boardid 잘못된 경우
         } 
     }); 
-    res.status(200).send({message:"success"}); // 성공시 , 다른조건 반환 ?
-});
-// 페이징 기능
-router.get('/page/:page',function(req,res,next)
-{
-    var page = req.params.page;
-    var sql = `SELECT userid,postid,title,content,imageFile from board`;
-    conn.query(sql, function (err, rows) {
-        if (err) console.error("err : " + err);
-        res.render('~~.ejs', {title: ' 게시판 리스트', rows: rows, page:page, length:rows.length-1, page_num:10, pass:true});
-        console.log(rows.length-1);
-    });
+    res.status(200).send({message:"success"}); 
 });
 
 module.exports=router;
