@@ -1,4 +1,5 @@
 const axios = require("axios");
+const logger = require("./winston");
 
 const OS_ENDPOINT = process.env.OS_ENDPOINT;
 const OS_TENANTID = process.env.OS_TENANTID;
@@ -66,8 +67,7 @@ ObjectStorage.prototype._handleFile = function _handleFile(req, file, cb) {
         axios
             .put(url, file.stream, putHeader(token, file))
             .then((response) => {
-                console.log("Put File Successed");
-                console.log("파일이름: "+ filename);
+                logger.info("Success Put File [filename : " +filename+"]");
                 // req.file에서 쓸 인자 추가
                 cb(null, {
                     uri: url,
