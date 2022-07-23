@@ -14,6 +14,7 @@ const connection = mysql.createConnection(dbconfig);
 
 const jwt = require("jsonwebtoken");       
 const { post } = require('../user/user');
+const logger = require('../../module/winston');
 
 
 //토큰 인증
@@ -82,6 +83,7 @@ router.post('/',function(req,res,next){
         }
         else{
             res.status(200).send({message:"success"});
+            logger.info("success make board. [userID : "+userid+"]");
         }
     }); 
     //todo:: 실패시

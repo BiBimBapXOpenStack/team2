@@ -14,6 +14,7 @@ const connection = mysql.createConnection(dbconfig);
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken"); 
+const logger = require("../../module/winston");
 
 const users = {};
 const jwtSecret = process.env.JWT_SECRET;  
@@ -22,9 +23,8 @@ router.use("*",(req,res,next)=>{
     next();
 })
 
-//로그인 ok~
+//로그인 
 router.post("/login",async(req,res,next)=>{
-    console.log("why");
     let id = req.body.userid;
     let pw = req.body.userpw;
     let hashed = await bcrypt.hash(pw,10);
@@ -47,7 +47,7 @@ router.post("/login",async(req,res,next)=>{
         }
 
         if (err) console.log(err);
-        else console.log("createComment");
+        else logger.info("login success [userID : "+ id+"]");
     });
 });
 

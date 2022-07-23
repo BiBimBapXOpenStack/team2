@@ -35,7 +35,6 @@ const upload = multer({
 router.post('/', upload.single('file'),(req,res,next) => {
   const {filename} = req.file;
   const imagesrc = OS_ENDPOINT + "/team2/uploads/"+filename
-  console.log("imgsrc: " + OS_ENDPOINT + "/team2/uploads/"+filename);
 
   let insertquery = `
   insert into image(image_src) values ('${imagesrc}');`;
@@ -47,6 +46,7 @@ router.post('/', upload.single('file'),(req,res,next) => {
       else {
         res.status(200).send({message:"success", 
                               image_src: OS_ENDPOINT + "/team2/uploads/"+ filename});
+        
       }
   });
   
