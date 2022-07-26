@@ -46,7 +46,6 @@ router.post('/', upload.single('file'),(req,res,next) => {
       else {
         res.status(200).send({message:"success", 
                               image_src: OS_ENDPOINT + "/team2/uploads/"+ filename});
-        
       }
   });
   

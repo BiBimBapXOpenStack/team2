@@ -8,7 +8,8 @@ const dbconfig = {
     port: process.env.DB_PORT,        
     user: process.env.DB_USER,
     password: process.env.DB_PW,
-    database: process.env.DB_DATABASE
+    database: process.env.DB_DATABASE,
+    multipleStatements: true
   };
 const connection = mysql.createConnection(dbconfig);
 
@@ -23,6 +24,18 @@ router.use("*",(req,res,next)=>{
     next();
 })
 
+
+router.get('/getid',function(req,res,next){
+    var sql=`SELECT user_id from user;`;
+    connection.query(sql,function(err,rows){
+        if(!err) {
+            res.status(200).send(rows);
+        }
+        else{
+            console.error("err: " +err);
+        }
+    });
+});
 //로그인 
 router.post("/login",async(req,res,next)=>{
     let id = req.body.userid;
@@ -32,18 +45,19 @@ router.post("/login",async(req,res,next)=>{
         expiresIn : 15*60
     });
 
-
     let query = `
     select * from user where user_id='${id}' and user_pw = '${pw}';`;
     connection.query(query, (err, result) => {
         if(!result){
-            res.status(400).send("login fail");
-        } 
+            res.status(400).send({message:"login failed"});
+        }
         else if(result.length!=0){
             res.cookie("2team-Token",newUserToken);
             res.status(200).send({message:"success"});
         } else {
-            res.status(400).send("login fail");
+            logger.info("login failed ID or PW not correct");
+            res.status(400).send({message:"login failed"});
+            return ;
         }
 
         if (err) console.log(err);
@@ -73,14 +87,16 @@ router.post("/",(req,res,next)=>{
     let insertquery = `
     insert into user(user_id,user_pw,user_name) values ('${id}','${pw}','${name}');`;
     connection.query(insertquery, (err, rows) => {
-        if (err) console.log(err);
-        else console.log("createComment");
+        if (err) {
+            res.status(400).send({message:"join failed"});
+            logger.error(err);
+            return;
+        }
+        else{
+            logger.info("createComment [userID : "+id+"]");
+            res.status(200).send({message:"join success"});
+        }
     });
-
-    res.status(200).send({message:"join success"});
-    res.send();
-
-    //todo:: 실패시
 });
 
 //중복 체크 > 프론트에서
