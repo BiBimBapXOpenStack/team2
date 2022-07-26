@@ -69,9 +69,7 @@ router.post("/login",async(req,res,next)=>{
 //로그아웃
 router.get("/logout",(req,res,next)=>{
     res.cookie("2team-Token",'login=true; Max-age=0');
-    console.log("토큰 삭제");
-    res.redirect('/login');
-    console.log("로그 아웃"); 
+    res.status(200).send({message:"logout"}); 
 });
 
 
