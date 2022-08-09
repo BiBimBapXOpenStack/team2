@@ -28,8 +28,8 @@ var logger= winston.createLogger({
         new winstonDaily({
 //이름이 info-file인 설정 정보는 매일 새로운 파일에 로그를 기록하도록 설정
             name: 'info-file',
-            filename: './log/info',
-            datePattern: '_yyyy-MM-dd.log',
+            filename: './log/2teamlog_%DATE%.log',
+            datePattern: 'yyyy-MM-dd',
 // 50MB를 넘어 가면 자동으로 새로운 파일을 생성되며, 이때 자동으로 분리되어 생성 되는 파일의 개수는 최대 1000개 까지 가능하다.
             maxsize: 50000000,           
             maxFiles: 1000,
@@ -42,8 +42,8 @@ var logger= winston.createLogger({
         }),
         new winstonDaily({
             name: 'error-file',
-            filename: './log/error',
-            datePattern: '_yyyy-MM-dd.log',
+            filename: './log/2teamErrlog_%DATE%.log',
+            datePattern: 'yyyy-MM-dd',
             level: "error",
         }), 
         new (winston.transports.Console)({
