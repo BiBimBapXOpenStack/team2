@@ -17,19 +17,19 @@ const { post } = require('../user/user');
 const logger = require('../../module/winston');
 
 
-//토큰 인증
-router.use("*",(req,res,next)=>{
-    console.log(req.cookies);
-    let clientCookie = req.cookies["2team-Token"];
-    console.log(clientCookie);
-    if(!clientCookie) res.status(401).send("인증되지 않은 사용자입니다.");
-    else if(jwt.verify(clientCookie,process.env.JWT_SECRET)){
-        next();
-    }
-    else{
-        res.status(401).send("인증되지 않은 사용자입니다.");
-    }
-});
+// //토큰 인증
+// router.use("*",(req,res,next)=>{
+//     console.log(req.cookies);
+//     let clientCookie = req.cookies["2team-Token"];
+//     console.log(clientCookie);
+//     if(!clientCookie) res.status(401).send("인증되지 않은 사용자입니다.");
+//     else if(jwt.verify(clientCookie,process.env.JWT_SECRET)){
+//         next();
+//     }
+//     else{
+//         res.status(401).send("인증되지 않은 사용자입니다.");
+//     }
+// });
 
 
 // 게시글 리스트

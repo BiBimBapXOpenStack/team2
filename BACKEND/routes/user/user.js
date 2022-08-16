@@ -24,7 +24,6 @@ router.use("*",(req,res,next)=>{
     next();
 })
 
-
 router.get('/getid',function(req,res,next){
     var sql=`SELECT user_id from user;`;
     connection.query(sql,function(err,rows){
@@ -71,6 +70,7 @@ router.get("/logout",(req,res,next)=>{
     res.cookie("2team-Token",'login=true; Max-age=0');
     res.status(200).send({message:"logout"}); 
 });
+
 
 
 //회원가입
