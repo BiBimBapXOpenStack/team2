@@ -22,7 +22,6 @@ echo "==========================================="
 cd /etc/nginx/sites-enabled
 sudo rm default
 cd ~/team2-BACKEND/bin/config
-sudo sed -i team2-back.conf
 sudo cp team2-back.conf /etc/nginx/sites-enabled
 echo "*** sites-enabled/team2-back.conf ***"
 sudo cat /etc/nginx/sites-enabled/team2-back.conf
@@ -38,4 +37,4 @@ pm2 start app.js
 echo "==========================================="
 echo "5. Nginx restart"
 echo "==========================================="
-sudo systemctl start nginx
+sudo vi /etc/nginx/sites-enabled/team2-back.conf
